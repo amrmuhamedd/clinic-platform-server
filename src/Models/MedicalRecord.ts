@@ -2,6 +2,8 @@ import { prop, getModelForClass, Ref } from "@typegoose/typegoose";
 import { User } from "./user";
 
 class MedicalRecord {
+  @prop({ ref: User })
+  patientId!: Ref<User>;
   @prop({ required: true })
   public session_date!: string;
 

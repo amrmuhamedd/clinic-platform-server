@@ -3,6 +3,7 @@ import { validationResult, checkSchema, Schema } from "express-validator";
 const { body } = require("express-validator");
 
 export const validateMedicalRecord = [
+  body("patientId").notEmpty().isString().withMessage("you must be string"),
   body("notes").isString().withMessage("you must be string"),
   body("message").isString().withMessage("message must be astring"),
   body("diagnosis").notEmpty().withMessage("you must type diagnosis"),

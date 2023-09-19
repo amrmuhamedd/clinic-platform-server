@@ -29,6 +29,7 @@ const router = express.Router();
  *       - Medical Records
  *     security:
  *       - bearerAuth: [] # Use the security scheme defined below
+ *
  *     requestBody:
  *       required: true
  *       content:
@@ -36,6 +37,9 @@ const router = express.Router();
  *           schema:
  *             type: object
  *             properties:
+ *               patientId:
+ *                 type: string
+ *                 example: 45454444548548548
  *               notes:
  *                 type: string
  *                 example: Patient presented with flu-like symptoms.
@@ -135,7 +139,7 @@ router.post(
 router.get(
   "/list",
   ensureAuthenticatedUser,
-  validateUserRole([UserRolesEnum.Doctor]),
+  validateUserRole([UserRolesEnum.Doctor, UserRolesEnum.Patient]),
   listMedicalRecords
 );
 export default router;

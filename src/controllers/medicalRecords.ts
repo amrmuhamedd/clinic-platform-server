@@ -4,6 +4,7 @@ import { MedicalRecordModel } from "../Models/MedicalRecord";
 export const createMedicalRecord = async (req: Request, res: Response) => {
   try {
     const doctorId = req.user?._id as number;
+    const patientId = req.query.patientId;
     const { notes, message, diagnosis, session_date } = req.body;
 
     const medicalRecord = new MedicalRecordModel({
@@ -12,13 +13,17 @@ export const createMedicalRecord = async (req: Request, res: Response) => {
       diagnosis,
       session_date,
       doctorId,
+      patientId,
     });
 
     await medicalRecord.save();
-    await medicalRecord.populate({
-      path: "doctorId",
-      select: "_id name",
-    });
+    await medicalRecord.populate([
+      {
+        path: "doctorId",
+        select: "_id name",
+      },
+      { path: "patientId", select: "_id name" },
+    ]);
     res.status(201).json(medicalRecord);
   } catch (error) {
     console.error(error);
@@ -28,6 +33,7 @@ export const createMedicalRecord = async (req: Request, res: Response) => {
 
 export const listMedicalRecords = async (req: Request, res: Response) => {
   try {
+    const userId = req.user?._id as number;
     const page = parseInt(req.query.page as string) || 1; // Default to page 1
     const perPage = parseInt(req.query.perPage as string) || 10; // Default to 10 records per page
 
@@ -36,8 +42,16 @@ export const listMedicalRecords = async (req: Request, res: Response) => {
     const limit = perPage;
 
     // Query the database for medical records with pagination
-    const medicalRecords = await MedicalRecordModel.find()
-      .populate({ path: "doctorId", select: "_id name" })
+    const medicalRecords = await MedicalRecordModel.find({
+      $or: [{ doctorId: userId }, { patientId: userId }],
+    })
+      .populate([
+        {
+          path: "doctorId",
+          select: "_id name",
+        },
+        { path: "patientId", select: "_id name" },
+      ])
       .skip(skip)
       .limit(limit);
 

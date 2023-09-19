@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 import express from "express";
-import userRoutes from "./routes/userRoutes";
+import userRoutes from "./routes/authRoutes";
 import swaggerUi from "swagger-ui-express";
 import { specs } from "./swaggerConfig";
 import mongoose from "mongoose";
@@ -12,7 +12,7 @@ const app = express();
 
 app.use(express.json());
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
-app.use("/api/users", userRoutes);
+app.use("/api/auth", userRoutes);
 
 const port = process.env.PORT || 3000;
 

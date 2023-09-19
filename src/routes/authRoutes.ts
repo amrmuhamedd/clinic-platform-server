@@ -8,17 +8,17 @@ const router = express.Router();
 /**
  * @swagger
  * tags:
- *   - name: Users
- *     description: Operations related to users
+ *   - name: Authentication
+ *     description: Operations related to Authentication
  */
 
 /**
  * @swagger
- * /api/users/register:
+ * /api/auth/register:
  *   post:
  *     summary: Register a new user
  *     tags:
- *       - Users
+ *       - Authentication
  *     requestBody:
  *       required: true
  *       content:
@@ -51,11 +51,11 @@ router.post("/register", validateRegistration, Register);
 
 /**
  * @swagger
- * /api/users/login:
+ * /api/auth/login:
  *   post:
  *     summary: Authenticate a user and generate a JWT token
  *     tags:
- *       - Users
+ *       - Authentication
  *     requestBody:
  *       required: true
  *       content:

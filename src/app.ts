@@ -1,11 +1,13 @@
 import express from "express";
 import dotenv from "dotenv";
-dotenv.config();
+import swaggerUi from "swagger-ui-express";
+import { specs } from "./swaggerConfig";
 
+dotenv.config();
 const app = express();
 
 app.use(express.json());
-
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
 app.use("/hello", (req, res) => {
   res.status(400).json({ message: "hello world" });
 });

@@ -11,6 +11,21 @@ const options = {
       version: "1.0.0",
       description: "API for managing clinic platform API",
     },
+    components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: "http",
+          in: "header",
+          name: "Authorization",
+          description: "Bearer Token",
+          scheme: "bearer",
+          bearerFormat: "JWT",
+        },
+      },
+    },
+    security: {
+      bearerAuth: [],
+    },
   },
   apis: [path.resolve(__dirname, "./routes/*.ts")],
 };

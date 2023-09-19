@@ -3,6 +3,7 @@
     "types": ["express", "node"],
     "target": "es2017",
     "module": "commonjs",
+    "strictPropertyInitialization": true,
     "resolveJsonModule": true,
     "allowJs": true,
     "sourceMap": true,

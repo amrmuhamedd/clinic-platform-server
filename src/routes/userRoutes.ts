@@ -1,4 +1,6 @@
 import express from "express";
+import { Register } from "../controllers/authentication";
+import { validateRegistration } from "../validations/register.dto";
 
 const router = express.Router();
 
@@ -44,8 +46,6 @@ const router = express.Router();
  *       '500':
  *         description: Internal server error
  */
-router.post("/register", (req, res) => {
-  res.status(400).json({ message: "hello world" });
-});
+router.post("/register", validateRegistration, Register);
 
 export default router;

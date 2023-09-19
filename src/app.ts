@@ -1,19 +1,24 @@
-import express from "express";
 import dotenv from "dotenv";
-import swaggerUi from "swagger-ui-express";
-import { specs } from "./swaggerConfig";
 
 dotenv.config();
+
+import express from "express";
+import userRoutes from "./routes/userRoutes";
+import swaggerUi from "swagger-ui-express";
+import { specs } from "./swaggerConfig";
+import mongoose from "mongoose";
+
 const app = express();
 
 app.use(express.json());
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
-app.use("/hello", (req, res) => {
-  res.status(400).json({ message: "hello world" });
-});
+app.use("/api/users", userRoutes);
 
 const port = process.env.PORT || 3000;
 
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
+const MONGODB_URI = process.env.DATABASE_URL;
+mongoose.connect(MONGODB_URI as string, {}).then(() => {
+  app.listen(port, () => {
+    console.log(`Server is running on port ${port}`);
+  });
 });

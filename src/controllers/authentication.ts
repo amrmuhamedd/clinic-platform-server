@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { UserModel } from "../Models/user";
 import bcrypt from "bcrypt";
-import { generateAuthToken } from "../utils/auth";
+import { comparePasswords, generateAuthToken } from "../utils/auth";
 
 export const Register = async (req: Request, res: Response) => {
   try {
@@ -31,5 +31,38 @@ export const Register = async (req: Request, res: Response) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Server error" });
+  }
+};
+
+export const loginUser = async (req: Request, res: Response) => {
+  const { email, password } = req.body;
+
+  try {
+    const user = await UserModel.findOne({ email });
+
+    if (!user) {
+      return res
+        .status(401)
+        .json({ error: "username or password is incorrect" });
+    }
+
+    const passwordMatch = await comparePasswords(password, user.password);
+
+    if (!passwordMatch) {
+      return res
+        .status(401)
+        .json({ error: "username or password is incorrect" });
+    }
+
+    const token = generateAuthToken({
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+    });
+
+    return res.status(200).json({ token });
+  } catch (error) {
+    return res.status(500).json({ error: "something went wrong" });
   }
 };

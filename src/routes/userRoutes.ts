@@ -1,6 +1,7 @@
 import express from "express";
-import { Register } from "../controllers/authentication";
-import { validateRegistration } from "../validations/register.dto";
+import { Register, loginUser } from "../controllers/authentication";
+import { validateRegistration } from "../validations/validateRegistration";
+import { validateLogin } from "../validations/validateLogin";
 
 const router = express.Router();
 
@@ -48,4 +49,41 @@ const router = express.Router();
  */
 router.post("/register", validateRegistration, Register);
 
+/**
+ * @swagger
+ * /api/users/login:
+ *   post:
+ *     summary: Authenticate a user and generate a JWT token
+ *     tags:
+ *       - Users
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 example: amr@example.com
+ *               password:
+ *                 type: string
+ *                 example: password123
+ *     responses:
+ *       '200':
+ *         description: Authentication successful
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 token:
+ *                   type: string
+ *                   example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+ *       '401':
+ *         description: Authentication failed
+ *       '500':
+ *         description: Internal server error
+ */
+router.post("/login", validateLogin, loginUser);
 export default router;

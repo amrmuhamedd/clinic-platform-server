@@ -11,6 +11,7 @@ import {
   listMedicalRecords,
   updateMedicalRecord,
 } from "../controllers/medicalRecords";
+import { validateUpdateMedicalRecord } from "../validations/validateUpdateMedicalRecord";
 
 const router = express.Router();
 
@@ -197,6 +198,7 @@ router.put(
   "/update/:id",
   ensureAuthenticatedUser,
   validateUserRole([UserRolesEnum.Doctor]),
+  validateUpdateMedicalRecord,
   updateMedicalRecord
 );
 export default router;

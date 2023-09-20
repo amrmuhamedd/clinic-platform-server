@@ -7,8 +7,8 @@ export const validateUpdateMedicalRecord = [
   body("patientId").isString().withMessage("you must be string"),
   body("notes").isString().withMessage("you must be string"),
   body("message").isString().withMessage("message must be astring"),
-  body("diagnosis").withMessage("you must type diagnosis"),
-  body("session_date").withMessage("you must type session date"),
+  body("diagnosis").isString().withMessage("you must type diagnosis"),
+  body("session_date").isString().withMessage("you must type session date"),
   (req: Request, res: Response, next: NextFunction) => {
     const errors = validationResult(req);
     if (!errors.isEmpty())

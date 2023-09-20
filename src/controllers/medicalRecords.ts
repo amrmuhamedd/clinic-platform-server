@@ -6,8 +6,7 @@ import { UserModel } from "../Models/user";
 export const createMedicalRecord = async (req: Request, res: Response) => {
   try {
     const doctorId = req.user?._id as number;
-    const patientId = req.query.patientId;
-    const { notes, message, diagnosis, session_date } = req.body;
+    const { notes, message, diagnosis, session_date, patientId } = req.body;
 
     const medicalRecord = new MedicalRecordModel({
       notes,
@@ -19,7 +18,13 @@ export const createMedicalRecord = async (req: Request, res: Response) => {
     });
 
     await medicalRecord.save();
+    const patient = await UserModel.findById(patientId);
 
+    const emailData = {
+      to: patient?.email as string,
+      subject: "Medical Record Created",
+      html: `<h3>Dear ${patient?.name}</h3> <p> your medical record at voithy was created please login to see them </p>`,
+    };
     await medicalRecord.populate([
       {
         path: "doctorId",
@@ -27,12 +32,6 @@ export const createMedicalRecord = async (req: Request, res: Response) => {
       },
       { path: "patientId", select: "_id name email" },
     ]);
-    const patient = await UserModel.findById(medicalRecord.patientId);
-    const emailData = {
-      to: patient?.email as string,
-      subject: "Medical Record Updated",
-      html: `<h1>Dear ${patient?.name}</h1> <p> your medical record at voithy was created please login to see them </p>`,
-    };
 
     await SendEmail(emailData);
     res.status(201).json(medicalRecord);
@@ -72,6 +71,46 @@ export const listMedicalRecords = async (req: Request, res: Response) => {
       perPage,
       totalCount,
     });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, error: "Internal server error" });
+  }
+};
+
+export const updateMedicalRecord = async (req: Request, res: Response) => {
+  try {
+    const recordId = req.params.id;
+    const { notes, message, diagnosis, session_date } = req.body;
+
+    const medicalRecord = await MedicalRecordModel.findById(recordId);
+
+    if (!medicalRecord) {
+      return res
+        .status(404)
+        .json({ success: false, error: "Medical record not found" });
+    }
+
+    await MedicalRecordModel.findByIdAndUpdate(recordId, {
+      notes,
+      message,
+      diagnosis,
+      session_date,
+    });
+
+    const patient = await UserModel.findById(medicalRecord.patientId);
+
+    const emailData = {
+      to: patient?.email as string,
+      subject: "Medical Record Updated",
+      html: `<h3>Dear ${patient?.name}</h3> <p> your medical  record at voithy was Updated  please login to see them </p>`,
+    };
+    await SendEmail(emailData);
+
+    const updatedMedicalRecord = await MedicalRecordModel.findById(
+      recordId
+    ).populate({ path: "doctorId", select: "name _id" });
+
+    res.status(200).json(updatedMedicalRecord);
   } catch (error) {
     console.error(error);
     res.status(500).json({ success: false, error: "Internal server error" });

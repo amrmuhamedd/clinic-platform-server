@@ -9,6 +9,7 @@ import { validateMedicalRecord } from "../validations/validateCreateMedicalRecor
 import {
   createMedicalRecord,
   listMedicalRecords,
+  updateMedicalRecord,
 } from "../controllers/medicalRecords";
 
 const router = express.Router();
@@ -106,8 +107,6 @@ router.post(
  *             schema:
  *               type: object
  *               properties:
- *                 success:
- *                   type: boolean
  *                 data:
  *                   type: array
  *                   items:
@@ -141,5 +140,63 @@ router.get(
   ensureAuthenticatedUser,
   validateUserRole([UserRolesEnum.Doctor, UserRolesEnum.Patient]),
   listMedicalRecords
+);
+
+/**
+ * @swagger
+ * /api/records/update/{recordId}:
+ *   put:
+ *     summary: Update a medical record (Doctor Only)
+ *     tags:
+ *       - Medical Records
+ *     security:
+ *       - bearerAuth: [] # Use the security scheme defined below
+ *     parameters:
+ *       - in: path
+ *         name: recordId
+ *         required: true
+ *         description: The ID of the medical record to update
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               notes:
+ *                 type: string
+ *                 example: Updated notes for the patient's condition.
+ *               message:
+ *                 type: string
+ *                 example: Adjusted treatment plan.
+ *               diagnosis:
+ *                 type: string
+ *                 example: Improved recovery.
+ *               session_date:
+ *                 type: string
+ *                 format: date-time
+ *                 example: 2023-09-20T12:00:00.000Z
+ *     responses:
+ *       '200':
+ *         description: Medical record updated successfully
+ *       '400':
+ *         description: Bad request, validation failed
+ *       '401':
+ *         description: Unauthorized, user is not a doctor
+ *       '403':
+ *         description: Forbidden, user does not have the required role
+ *       '404':
+ *         description: Medical record not found
+ *       '500':
+ *         description: Internal server error
+ */
+
+router.put(
+  "/update/:id",
+  ensureAuthenticatedUser,
+  validateUserRole([UserRolesEnum.Doctor]),
+  updateMedicalRecord
 );
 export default router;

@@ -8,6 +8,8 @@ type SendEmailDto = {
 };
 
 export const SendEmail = (data: SendEmailDto) => {
+  console.log({ data, sender: process.env.FROM_EMAIL });
+
   return transport.sendMail({
     from: process.env.FROM_EMAIL,
     to: data.to,

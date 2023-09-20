@@ -34,14 +34,12 @@ export const createMedicalRecord = async (req: Request, res: Response) => {
 export const listMedicalRecords = async (req: Request, res: Response) => {
   try {
     const userId = req.user?._id as number;
-    const page = parseInt(req.query.page as string) || 1; // Default to page 1
-    const perPage = parseInt(req.query.perPage as string) || 10; // Default to 10 records per page
+    const page = parseInt(req.query.page as string) || 1;
+    const perPage = parseInt(req.query.perPage as string) || 10;
 
-    // Calculate skip and limit values for pagination
     const skip = (page - 1) * perPage;
     const limit = perPage;
 
-    // Query the database for medical records with pagination
     const medicalRecords = await MedicalRecordModel.find({
       $or: [{ doctorId: userId }, { patientId: userId }],
     })
@@ -55,7 +53,6 @@ export const listMedicalRecords = async (req: Request, res: Response) => {
       .skip(skip)
       .limit(limit);
 
-    // Count the total number of records (useful for pagination)
     const totalCount = await MedicalRecordModel.countDocuments();
 
     res.status(200).json({

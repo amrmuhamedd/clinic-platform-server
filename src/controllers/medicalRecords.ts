@@ -1,5 +1,7 @@
 import { Request, Response } from "express";
 import { MedicalRecordModel } from "../Models/MedicalRecord";
+import { SendEmail } from "../services/sendEmail";
+import { UserModel } from "../Models/user";
 
 export const createMedicalRecord = async (req: Request, res: Response) => {
   try {
@@ -17,13 +19,22 @@ export const createMedicalRecord = async (req: Request, res: Response) => {
     });
 
     await medicalRecord.save();
+
     await medicalRecord.populate([
       {
         path: "doctorId",
         select: "_id name",
       },
-      { path: "patientId", select: "_id name" },
+      { path: "patientId", select: "_id name email" },
     ]);
+    const patient = await UserModel.findById(medicalRecord.patientId);
+    const emailData = {
+      to: patient?.email as string,
+      subject: "Medical Record Updated",
+      html: `<h1>Dear ${patient?.name}</h1> <p> your medical record at voithy was created please login to see them </p>`,
+    };
+
+    await SendEmail(emailData);
     res.status(201).json(medicalRecord);
   } catch (error) {
     console.error(error);

@@ -102,6 +102,11 @@ router.post(
  *         schema:
  *           type: integer
  *           default: 10
+ *       - name: patientId
+ *         required: false
+ *         description: The ID of the medical record to update
+ *         schema:
+ *           type: string
  *     responses:
  *       '200':
  *         description: Successful response

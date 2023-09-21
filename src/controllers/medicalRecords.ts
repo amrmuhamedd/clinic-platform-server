@@ -43,7 +43,8 @@ export const createMedicalRecord = async (req: Request, res: Response) => {
 
 export const listMedicalRecords = async (req: Request, res: Response) => {
   try {
-    const userId = req.user?._id as number;
+    const userId = req.user?._id;
+    const patientId = req.params?.id;
     const page = parseInt(req.query.page as string) || 1;
     const perPage = parseInt(req.query.perPage as string) || 10;
 
@@ -52,6 +53,7 @@ export const listMedicalRecords = async (req: Request, res: Response) => {
 
     const medicalRecords = await MedicalRecordModel.find({
       $or: [{ doctorId: userId }, { patientId: userId }],
+      patientId,
     })
       .populate([
         {

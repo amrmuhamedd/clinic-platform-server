@@ -9,9 +9,9 @@ import patientsRoutes from "./routes/patient";
 import swaggerUi from "swagger-ui-express";
 import { specs } from "./swaggerConfig";
 import mongoose from "mongoose";
-
+import cors from 'cors'
 const app = express();
-
+app.use(cors())
 app.use(express.json());
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
 app.use("/api/auth", userRoutes);

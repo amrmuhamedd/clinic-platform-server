@@ -93,6 +93,13 @@ The Medical Record model stores medical records with the following fields:
 - `diagnosis`: Diagnosis
 - `session_date`: Date of the medical session
 
+## live preview 
+
+you can see the live preview [here](https://clincal-platform.onrender.com/api-docs/#/) . Please note that the initial launch of the documentation may be a bit slow as it is hosted on a free hosting plan.
+## At the end 
+Please refer to the Swagger documentation for detailed information on each endpoint and how to use them.
+
+If you have any questions or encounter issues, feel free to reach out for assistance.
 
 
 

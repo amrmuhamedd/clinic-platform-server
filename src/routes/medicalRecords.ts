@@ -211,6 +211,8 @@ router.put(
  *     summary: Delete a medical record by ID
  *     tags:
  *       - Medical Records
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id

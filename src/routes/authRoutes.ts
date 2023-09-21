@@ -1,7 +1,12 @@
 import express from "express";
-import { Register, loginUser } from "../controllers/authentication";
+import {
+  Register,
+  getLoggedInUserInfo,
+  loginUser,
+} from "../controllers/authentication";
 import { validateRegistration } from "../validations/validateRegistration";
 import { validateLogin } from "../validations/validateLogin";
+import ensureAuthenticatedUser from "../middlewares/ensureAuthenticatedUser";
 
 const router = express.Router();
 
@@ -86,4 +91,41 @@ router.post("/register", validateRegistration, Register);
  *         description: Internal server error
  */
 router.post("/login", validateLogin, loginUser);
+
+/**
+ * @swagger
+ * /api/auth/me:
+ *   get:
+ *     summary: Get information about the logged in user
+ *     tags:
+ *       - Authentication
+ *     security:
+ *       - bearerAuth: [] # Use the security scheme defined below
+ *     responses:
+ *       '200':
+ *         description: Successful response with user information
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 _id:
+ *                   type: string
+ *                   description: The unique identifier of the user
+ *                 name:
+ *                   type: string
+ *                   description: The name of the user
+ *                 email:
+ *                   type: string
+ *                   description: The email address of the user
+ *                 role:
+ *                   type: string
+ *                   description: The role of the user (e.g., patient, doctor)
+ *       '401':
+ *         description: Unauthorized, user is not authenticated
+ *       '500':
+ *         description: Internal server error
+ */
+
+router.get("/me", ensureAuthenticatedUser, getLoggedInUserInfo);
 export default router;

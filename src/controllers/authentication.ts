@@ -66,3 +66,14 @@ export const loginUser = async (req: Request, res: Response) => {
     return res.status(500).json({ error: "something went wrong" });
   }
 };
+
+export const getLoggedInUserInfo = (req: Request, res: Response) => {
+  try {
+    const user = req.user;
+
+    res.status(200).json(user);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, error: "Internal server error" });
+  }
+};

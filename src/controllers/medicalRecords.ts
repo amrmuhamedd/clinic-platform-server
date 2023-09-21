@@ -116,3 +116,22 @@ export const updateMedicalRecord = async (req: Request, res: Response) => {
     res.status(500).json({ success: false, error: "Internal server error" });
   }
 };
+
+export const deleteMedicalRecord = async (req: Request, res: Response) => {
+  try {
+    const recordId = req.params.id;
+
+    const deletedRecord = await MedicalRecordModel.findByIdAndDelete(recordId);
+
+    if (!deletedRecord) {
+      return res
+        .status(404)
+        .json({ success: false, error: "Medical record not found" });
+    }
+
+    res.status(200).json({ success: true, message: "Medical record deleted" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, error: "Internal server error" });
+  }
+};

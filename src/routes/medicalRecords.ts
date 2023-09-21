@@ -8,10 +8,12 @@ import { UserRolesEnum } from "../enums/userRole.enum";
 import { validateMedicalRecord } from "../validations/validateCreateMedicalRecord";
 import {
   createMedicalRecord,
+  deleteMedicalRecord,
   listMedicalRecords,
   updateMedicalRecord,
 } from "../controllers/medicalRecords";
 import { validateUpdateMedicalRecord } from "../validations/validateUpdateMedicalRecord";
+import { validateDeleteMedicalRecord } from "../validations/validateDeleteMedicalRecord";
 
 const router = express.Router();
 
@@ -151,7 +153,7 @@ router.get(
  *     tags:
  *       - Medical Records
  *     security:
- *       - bearerAuth: [] # Use the security scheme defined below
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: recordId
@@ -200,5 +202,35 @@ router.put(
   validateUserRole([UserRolesEnum.Doctor]),
   validateUpdateMedicalRecord,
   updateMedicalRecord
+);
+
+/**
+ * @swagger
+ * /api/records/delete/{id}:
+ *   delete:
+ *     summary: Delete a medical record by ID
+ *     tags:
+ *       - Medical Records
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID of the medical record to delete
+ *         schema:
+ *           type: string
+ *     responses:
+ *       '200':
+ *         description: Medical record deleted successfully
+ *       '404':
+ *         description: Medical record not found
+ *       '500':
+ *         description: Internal server error
+ */
+router.delete(
+  "/delete/:id",
+  ensureAuthenticatedUser,
+  validateUserRole([UserRolesEnum.Doctor]),
+  validateDeleteMedicalRecord,
+  deleteMedicalRecord
 );
 export default router;

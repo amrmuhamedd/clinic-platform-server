@@ -2,6 +2,8 @@
 
 The Clinic Platform is a web-based application designed to streamline communication and data management between doctors and patients. It allows doctors to view patient profiles, create and update medical records, and send notifications to patients. Patients can log in, view their profiles, and receive email notifications about updates to their medical records.
 
+![image](https://github.com/amrmuhamedd/clinic-platform-server/assets/47860740/0ec7177e-2074-4669-9188-b642b74fe349)
+
 ## Technologies Used
 
 - **Node.js:** Used for the backend server.
